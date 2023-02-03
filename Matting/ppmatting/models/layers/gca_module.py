@@ -2,9 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from models.cvlibs import param_init
-
-
 class GuidedCxtAtten(nn.Layer):
     def __init__(self,
                  out_channels,
@@ -29,15 +26,6 @@ class GuidedCxtAtten(nn.Layer):
                 kernel_size=1,
                 bias_attr=False),
             nn.BatchNorm2d(out_channels))
-
-        self.init_weight()
-
-    def init_weight(self):
-        param_init.xavier_uniform(self.guidance_conv.weight)
-        param_init.constant_init(self.guidance_conv.bias, value=0.0)
-        param_init.xavier_uniform(self.out_conv[0].weight)
-        param_init.constant_init(self.out_conv[1].weight, value=1e-3)
-        param_init.constant_init(self.out_conv[1].bias, value=0.0)
 
     def forward(self, img_feat, alpha_feat, unknown=None, softmax_scale=1.):
 
